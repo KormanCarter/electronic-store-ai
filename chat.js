@@ -1,3 +1,6 @@
+const LS_USERS_KEY = 'electro_users';
+const LS_SESSION_KEY = 'electro_session';
+
 const defaultPrompts = [
 	{
 		question: 'Which laptop is good for programming?',
@@ -39,10 +42,69 @@ const quickFacts = [
 	'Noise-cancelling headphones work best on steady noises like engines or HVAC.'
 ];
 
+const authCardEl = document.getElementById('auth-card');
+const appShellEl = document.getElementById('app-shell');
+const loginForm = document.getElementById('login-form');
+const signupForm = document.getElementById('signup-form');
+const tabLogin = document.getElementById('tab-login');
+const tabSignup = document.getElementById('tab-signup');
+const userEmailLabel = document.getElementById('user-email');
+const logoutBtn = document.getElementById('logout-btn');
+
+const loginEmailInput = document.getElementById('login-email');
+const loginPasswordInput = document.getElementById('login-password');
+const signupNameInput = document.getElementById('signup-name');
+const signupEmailInput = document.getElementById('signup-email');
+const signupPasswordInput = document.getElementById('signup-password');
+
 const logEl = document.getElementById('log');
 const formEl = document.getElementById('chat-form');
 const inputEl = document.getElementById('chat-input');
 const chipListEl = document.getElementById('chip-list');
+
+function loadUsers() {
+	try {
+		const raw = localStorage.getItem(LS_USERS_KEY);
+		return raw ? JSON.parse(raw) : [];
+	} catch (err) {
+		console.error('Failed to parse users from storage', err);
+		return [];
+	}
+}
+
+function saveUsers(users) {
+	localStorage.setItem(LS_USERS_KEY, JSON.stringify(users));
+}
+
+function setSession(email) {
+	localStorage.setItem(LS_SESSION_KEY, email);
+}
+
+function clearSession() {
+	localStorage.removeItem(LS_SESSION_KEY);
+}
+
+function resetChatLog() {
+	while (logEl.firstChild) {
+		logEl.removeChild(logEl.firstChild);
+	}
+}
+
+function showApp(email) {
+	authCardEl.classList.add('hidden');
+	appShellEl.classList.remove('hidden');
+	userEmailLabel.textContent = email;
+}
+
+function showAuth() {
+	appShellEl.classList.add('hidden');
+	authCardEl.classList.remove('hidden');
+	loginForm.classList.remove('hidden');
+	signupForm.classList.add('hidden');
+	tabLogin.classList.add('active');
+	tabSignup.classList.remove('active');
+	resetChatLog();
+}
 
 function appendMessage(role, text) {
 	const wrap = document.createElement('div');
@@ -75,7 +137,7 @@ function pickCannedAnswer(message) {
 
 	if (keywordMatch) return keywordMatch.answer;
 	const fallback = quickFacts[Math.floor(Math.random() * quickFacts.length)];
-	return `${fallback} Ask about feeding, enrichment, health, or behavior for more.`;
+	return `${fallback} Ask about laptops, phones, TVs, gaming gear, or store policies for more.`;
 }
 
 function handleUserMessage(message) {
@@ -102,6 +164,79 @@ formEl.addEventListener('submit', (evt) => {
 	handleUserMessage(inputEl.value || '');
 });
 
+function switchTab(mode) {
+	if (mode === 'login') {
+		loginForm.classList.remove('hidden');
+		signupForm.classList.add('hidden');
+		tabLogin.classList.add('active');
+		tabSignup.classList.remove('active');
+	} else {
+		loginForm.classList.add('hidden');
+		signupForm.classList.remove('hidden');
+		tabLogin.classList.remove('active');
+		tabSignup.classList.add('active');
+	}
+}
+
+tabLogin.addEventListener('click', () => switchTab('login'));
+tabSignup.addEventListener('click', () => switchTab('signup'));
+
+loginForm.addEventListener('submit', (evt) => {
+	evt.preventDefault();
+	const email = (loginEmailInput.value || '').trim().toLowerCase();
+	const password = (loginPasswordInput.value || '').trim();
+	if (!email || !password) return;
+
+	const users = loadUsers();
+	const found = users.find((u) => u.email === email && u.password === password);
+	if (!found) {
+		alert('Invalid credentials.');
+		return;
+	}
+
+	setSession(email);
+	showApp(email);
+	resetChatLog();
+	appendMessage('bot', `Welcome back, ${found.name || 'guest'}! Ask about laptops, phones, TVs, or store policies.`);
+	loginPasswordInput.value = '';
+});
+
+signupForm.addEventListener('submit', (evt) => {
+	evt.preventDefault();
+	const name = (signupNameInput.value || '').trim();
+	const email = (signupEmailInput.value || '').trim().toLowerCase();
+	const password = (signupPasswordInput.value || '').trim();
+	if (!name || !email || password.length < 6) {
+		alert('Please provide name, email, and a password with at least 6 characters.');
+		return;
+	}
+
+	const users = loadUsers();
+	if (users.some((u) => u.email === email)) {
+		alert('An account with that email already exists.');
+		return;
+	}
+
+	users.push({ name, email, password });
+	saveUsers(users);
+	setSession(email);
+	showApp(email);
+	resetChatLog();
+	appendMessage('bot', `Account created. Welcome, ${name}! Ask about laptops, phones, TVs, or store policies.`);
+	signupPasswordInput.value = '';
+});
+
+logoutBtn.addEventListener('click', () => {
+	clearSession();
+	showAuth();
+});
+
 renderChips();
-appendMessage('bot', 'Hi! Ask me about laptops, phones, TVs, gaming gear, price match, shipping, or returns.');
-git status
+
+const existingSession = localStorage.getItem(LS_SESSION_KEY);
+if (existingSession) {
+	showApp(existingSession);
+	appendMessage('bot', 'Hi! Ask me about laptops, phones, TVs, gaming gear, price match, shipping, or returns.');
+} else {
+	showAuth();
+}
