@@ -195,10 +195,7 @@ loginForm.addEventListener('submit', (evt) => {
 	}
 
 	setSession(email);
-	showApp(email);
-	resetChatLog();
-	appendMessage('bot', `Welcome back, ${found.name || 'guest'}! Ask about laptops, phones, TVs, or store policies.`);
-	loginPasswordInput.value = '';
+	window.location.href = 'home.html';
 });
 
 signupForm.addEventListener('submit', (evt) => {
@@ -220,10 +217,7 @@ signupForm.addEventListener('submit', (evt) => {
 	users.push({ name, email, password });
 	saveUsers(users);
 	setSession(email);
-	showApp(email);
-	resetChatLog();
-	appendMessage('bot', `Account created. Welcome, ${name}! Ask about laptops, phones, TVs, or store policies.`);
-	signupPasswordInput.value = '';
+	window.location.href = 'home.html';
 });
 
 logoutBtn.addEventListener('click', () => {

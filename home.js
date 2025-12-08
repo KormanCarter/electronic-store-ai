@@ -1,14 +1,3 @@
-// Security: HTML escaping function to prevent XSS
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') return unsafe;
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
 // Product Data
 const products = [
     {
@@ -163,6 +152,9 @@ const products = [
     }
 ];
 
+// Authentication constant
+const LS_SESSION_KEY = 'electro_session';
+
 // State Management
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let wallet = JSON.parse(localStorage.getItem('wallet')) || { balance: 0, transactions: [] };
@@ -170,8 +162,18 @@ let currentFilter = 'All';
 let currentSort = 'default';
 let searchQuery = '';
 
+// Check Authentication
+function checkAuthentication() {
+    const currentUser = localStorage.getItem(LS_SESSION_KEY);
+    if (!currentUser) {
+        // User is not logged in, redirect to signup/login page
+        window.location.href = 'chatbot.html';
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    checkAuthentication();
     renderProducts();
     updateCartCount();
     updateWalletDisplay();
@@ -214,31 +216,29 @@ function renderProducts() {
         <div class="product-card">
             <div class="product-image">${product.icon}</div>
             <div class="product-info">
-                <div class="product-category">${escapeHtml(product.category)}</div>
-                <div class="product-name">${escapeHtml(product.name)}</div>
+                <div class="product-category">${product.category}</div>
+                <div class="product-name">${product.name}</div>
                 <div class="product-rating">
                     <span class="stars">${getStarRating(product.rating)}</span>
                     <span class="rating-text">${product.rating} (${product.reviews})</span>
                 </div>
                 <div class="product-price">$${product.price.toLocaleString()}</div>
                 <div class="product-actions">
-                    <button class="btn-add-cart" data-product-id="${product.id}">Add to Cart</button>
-                    <button class="btn-buy-now" data-product-id="${product.id}">Buy Now</button>
+                    <button class="btn-add-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                    <button class="btn-buy-now" onclick="buyNow(${product.id})">Buy Now</button>
                 </div>
             </div>
         </div>
     `).join('');
 
     if (filteredProducts.length === 0) {
-        const emptyDiv = document.createElement('div');
-        emptyDiv.style.cssText = 'grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);';
-        emptyDiv.innerHTML = `
-            <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
-            <h3>No products found</h3>
-            <p>Try adjusting your filters or search terms</p>
+        productsGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
+                <h3>No products found</h3>
+                <p>Try adjusting your filters or search terms</p>
+            </div>
         `;
-        productsGrid.innerHTML = '';
-        productsGrid.appendChild(emptyDiv);
     }
 }
 
@@ -354,51 +354,44 @@ function renderCart() {
     const cartContent = document.getElementById('cartContent');
     
     if (cart.length === 0) {
-        const emptyDiv = document.createElement('div');
-        emptyDiv.className = 'empty-cart';
-        emptyDiv.innerHTML = `
-            <div class="empty-cart-icon">🛒</div>
-            <h3>Your cart is empty</h3>
-            <p>Add some products to get started!</p>
+        cartContent.innerHTML = `
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <h3>Your cart is empty</h3>
+                <p>Add some products to get started!</p>
+            </div>
         `;
-        cartContent.innerHTML = '';
-        cartContent.appendChild(emptyDiv);
         return;
     }
     
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    const cartItemsDiv = document.createElement('div');
-    cartItemsDiv.className = 'cart-items';
-    cartItemsDiv.innerHTML = cart.map(item => `
-        <div class="cart-item">
-            <div class="cart-item-image">${item.icon}</div>
-            <div class="cart-item-info">
-                <div class="cart-item-name">${escapeHtml(item.name)}</div>
-                <div class="cart-item-price">$${item.price.toLocaleString()}</div>
-                <div class="cart-item-controls">
-                    <button class="qty-btn qty-minus" data-item-id="${item.id}">−</button>
-                    <span class="qty-display">${item.quantity}</span>
-                    <button class="qty-btn qty-plus" data-item-id="${item.id}">+</button>
+    cartContent.innerHTML = `
+        <div class="cart-items">
+            ${cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-image">${item.icon}</div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">$${item.price.toLocaleString()}</div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
+                            <span class="qty-display">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
                 </div>
+            `).join('')}
+        </div>
+        <div class="cart-total">
+            <div class="total-row">
+                <span>Total:</span>
+                <span class="total-amount">$${total.toLocaleString()}</span>
             </div>
-            <button class="remove-btn" data-item-id="${item.id}">Remove</button>
+            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
         </div>
-    `).join('');
-    
-    const cartTotalDiv = document.createElement('div');
-    cartTotalDiv.className = 'cart-total';
-    cartTotalDiv.innerHTML = `
-        <div class="total-row">
-            <span>Total:</span>
-            <span class="total-amount">$${total.toLocaleString()}</span>
-        </div>
-        <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
     `;
-    
-    cartContent.innerHTML = '';
-    cartContent.appendChild(cartItemsDiv);
-    cartContent.appendChild(cartTotalDiv);
 }
 
 // Update Quantity
@@ -736,11 +729,11 @@ function renderTransactionHistory() {
     const container = document.getElementById('transactionHistory');
     
     if (wallet.transactions.length === 0) {
-        const emptyDiv = document.createElement('div');
-        emptyDiv.style.cssText = 'text-align: center; padding: 2rem; color: var(--text-muted);';
-        emptyDiv.textContent = 'No transactions yet';
-        container.innerHTML = '';
-        container.appendChild(emptyDiv);
+        container.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                No transactions yet
+            </div>
+        `;
         return;
     }
     
@@ -756,7 +749,7 @@ function renderTransactionHistory() {
                 <div class="transaction-type">
                     <span>${icon}</span>
                     <div>
-                        <div style="font-weight: 600;">${escapeHtml(transaction.description)}</div>
+                        <div style="font-weight: 600;">${transaction.description}</div>
                         <div style="font-size: 0.85rem; color: var(--text-muted);">
                             ${date.toLocaleDateString()} ${date.toLocaleTimeString()}
                         </div>
@@ -804,99 +797,4 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
         toggleAIChat();
     }
-});
-
-// Initialize event listeners when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Search button
-    document.getElementById('searchBtn')?.addEventListener('click', searchProducts);
-    document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchProducts();
-    });
-    
-    // Navigation buttons
-    document.getElementById('aiChatBtn')?.addEventListener('click', toggleAIChat);
-    document.getElementById('floatingAIBtn')?.addEventListener('click', toggleAIChat);
-    document.getElementById('walletBtn')?.addEventListener('click', toggleWallet);
-    document.getElementById('cartBtn')?.addEventListener('click', toggleCart);
-    document.getElementById('shopNowBtn')?.addEventListener('click', scrollToProducts);
-    
-    // Modal close buttons
-    document.getElementById('closeCartBtn')?.addEventListener('click', toggleCart);
-    document.getElementById('closeAIBtn')?.addEventListener('click', toggleAIChat);
-    document.getElementById('closeWalletBtn')?.addEventListener('click', toggleWallet);
-    
-    // AI Chat
-    document.getElementById('aiSendBtn')?.addEventListener('click', sendAIMessage);
-    document.getElementById('aiInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendAIMessage();
-    });
-    
-    // Wallet buttons
-    document.getElementById('showAddFundsBtn')?.addEventListener('click', showAddFunds);
-    document.getElementById('showWithdrawBtn')?.addEventListener('click', showWithdraw);
-    document.getElementById('addFundsBtn')?.addEventListener('click', addFunds);
-    document.getElementById('hideAddFundsBtn')?.addEventListener('click', hideAddFunds);
-    
-    // Sort select
-    document.getElementById('sortSelect')?.addEventListener('change', sortProducts);
-    
-    // Event delegation for dynamically generated elements
-    // Category cards
-    document.getElementById('categoryGrid')?.addEventListener('click', (e) => {
-        const card = e.target.closest('.category-card');
-        if (card) {
-            const category = card.dataset.category;
-            if (category) filterByCategory(category);
-        }
-    });
-    
-    // Filter buttons
-    document.getElementById('filterButtons')?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('filter-btn') && e.target.dataset.filter) {
-            filterByCategory(e.target.dataset.filter);
-        }
-    });
-    
-    // AI suggestion chips
-    document.getElementById('aiSuggestions')?.addEventListener('click', (e) => {
-        const chip = e.target.closest('.suggestion-chip');
-        if (chip && chip.dataset.question) {
-            askAI(chip.dataset.question);
-        }
-    });
-    
-    // Quick amount buttons
-    document.getElementById('quickAmounts')?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('quick-amount-btn') && e.target.dataset.amount) {
-            setAmount(parseInt(e.target.dataset.amount));
-        }
-    });
-    
-    // Product actions (Add to Cart, Buy Now)
-    document.getElementById('productsGrid')?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-add-cart')) {
-            const productId = parseInt(e.target.dataset.productId);
-            if (productId) addToCart(productId);
-        } else if (e.target.classList.contains('btn-buy-now')) {
-            const productId = parseInt(e.target.dataset.productId);
-            if (productId) buyNow(productId);
-        }
-    });
-    
-    // Cart actions (quantity, remove)
-    document.getElementById('cartContent')?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('qty-minus')) {
-            const itemId = parseInt(e.target.dataset.itemId);
-            if (itemId) updateQuantity(itemId, -1);
-        } else if (e.target.classList.contains('qty-plus')) {
-            const itemId = parseInt(e.target.dataset.itemId);
-            if (itemId) updateQuantity(itemId, 1);
-        } else if (e.target.classList.contains('remove-btn')) {
-            const itemId = parseInt(e.target.dataset.itemId);
-            if (itemId) removeFromCart(itemId);
-        } else if (e.target.id === 'checkoutBtn') {
-            checkout();
-        }
-    });
 });
