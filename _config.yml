@@ -1,0 +1,19 @@
+# GitHub Pages configuration
+theme: null
+plugins: []
+
+# Security settings
+enforce_ssl: true
+
+# Build settings
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# Exclude unnecessary files from the build
+exclude:
+  - .gitignore
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
