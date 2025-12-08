@@ -5,6 +5,17 @@ class ShoppingCart {
         this.loadCart();
     }
 
+    // Security: HTML escaping function
+    escapeHtml(unsafe) {
+        if (typeof unsafe !== 'string') return unsafe;
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     // Add product to cart
     addProduct(product) {
         const existingItem = this.items.find(item => item.id === product.id);
@@ -114,26 +125,29 @@ class ShoppingCart {
         // Update cart items display
         if (cartContainer) {
             if (this.items.length === 0) {
-                cartContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+                const emptyP = document.createElement('p');
+                emptyP.className = 'empty-cart';
+                emptyP.textContent = 'Your cart is empty';
+                cartContainer.innerHTML = '';
+                cartContainer.appendChild(emptyP);
             } else {
                 cartContainer.innerHTML = this.items.map(item => `
-                    <div class="cart-item" data-id="${item.id}">
+                    <div class="cart-item" data-id="${this.escapeHtml(item.id)}">
                         <div class="item-info">
-                            ${item.image ? `<img src="${item.image}" alt="${item.name}" class="item-image">` : ''}
+                            ${item.image ? `<img src="${this.escapeHtml(item.image)}" alt="${this.escapeHtml(item.name)}" class="item-image">` : ''}
                             <div class="item-details">
-                                <h3>${item.name}</h3>
+                                <h3>${this.escapeHtml(item.name)}</h3>
                                 <p class="item-price">$${item.price.toFixed(2)}</p>
                             </div>
                         </div>
                         <div class="item-controls">
                             <div class="quantity-controls">
-                                <button class="qty-btn minus" onclick="cart.updateQuantity('${item.id}', ${item.quantity - 1})">-</button>
-                                <input type="number" class="qty-input" value="${item.quantity}" min="1" 
-                                    onchange="cart.updateQuantity('${item.id}', parseInt(this.value))">
-                                <button class="qty-btn plus" onclick="cart.updateQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                                <button class="qty-btn minus" data-item-id="${item.id}" data-action="decrease">-</button>
+                                <input type="number" class="qty-input" value="${item.quantity}" min="1" data-item-id="${item.id}">
+                                <button class="qty-btn plus" data-item-id="${item.id}" data-action="increase">+</button>
                             </div>
                             <p class="item-subtotal">$${this.getItemSubtotal(item).toFixed(2)}</p>
-                            <button class="remove-btn" onclick="cart.removeProduct('${item.id}')">Remove</button>
+                            <button class="remove-btn" data-item-id="${item.id}">Remove</button>
                         </div>
                     </div>
                 `).join('');
@@ -390,19 +404,20 @@ async function handleCheckout(event) {
 
 // Show payment success message
 function showPaymentSuccess(result) {
-    const successMessage = `
-        <div class="payment-success">
-            <h2>✓ Payment Successful!</h2>
-            <p>Transaction ID: ${result.transactionId}</p>
-            <p>Amount: $${result.amount.toFixed(2)}</p>
-            <p>Card: ${result.cardType} ending in ${result.lastFourDigits}</p>
-            <p>Thank you for your purchase!</p>
-        </div>
+    const successDiv = document.createElement('div');
+    successDiv.className = 'payment-success';
+    successDiv.innerHTML = `
+        <h2>✓ Payment Successful!</h2>
+        <p>Transaction ID: ${cart.escapeHtml(result.transactionId)}</p>
+        <p>Amount: $${result.amount.toFixed(2)}</p>
+        <p>Card: ${cart.escapeHtml(result.cardType)} ending in ${cart.escapeHtml(result.lastFourDigits)}</p>
+        <p>Thank you for your purchase!</p>
     `;
     
     const container = document.getElementById('payment-result');
     if (container) {
-        container.innerHTML = successMessage;
+        container.innerHTML = '';
+        container.appendChild(successDiv);
     } else {
         alert('Payment Successful! Transaction ID: ' + result.transactionId);
     }
@@ -412,11 +427,11 @@ function showPaymentSuccess(result) {
 function showPaymentError(errors) {
     const errorContainer = document.getElementById('payment-errors');
     if (errorContainer) {
-        errorContainer.innerHTML = `
-            <div class="payment-errors">
-                ${errors.map(error => `<p class="error">⚠ ${error}</p>`).join('')}
-            </div>
-        `;
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'payment-errors';
+        errorDiv.innerHTML = errors.map(error => `<p class="error">⚠ ${cart.escapeHtml(error)}</p>`).join('');
+        errorContainer.innerHTML = '';
+        errorContainer.appendChild(errorDiv);
     } else {
         alert('Payment Error: ' + errors.join(', '));
     }
@@ -426,3 +441,43 @@ function showPaymentError(errors) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { ShoppingCart, PaymentProcessor, cart, paymentProcessor };
 }
+
+// Event delegation for cart actions
+document.addEventListener('DOMContentLoaded', () => {
+    const cartContainer = document.getElementById('cart-items');
+    
+    if (cartContainer) {
+        cartContainer.addEventListener('click', (e) => {
+            const target = e.target;
+            
+            // Handle quantity decrease
+            if (target.classList.contains('minus') && target.dataset.itemId) {
+                const itemId = target.dataset.itemId;
+                const currentQty = parseInt(target.closest('.quantity-controls').querySelector('.qty-input').value);
+                cart.updateQuantity(itemId, currentQty - 1);
+            }
+            
+            // Handle quantity increase
+            else if (target.classList.contains('plus') && target.dataset.itemId) {
+                const itemId = target.dataset.itemId;
+                const currentQty = parseInt(target.closest('.quantity-controls').querySelector('.qty-input').value);
+                cart.updateQuantity(itemId, currentQty + 1);
+            }
+            
+            // Handle remove button
+            else if (target.classList.contains('remove-btn') && target.dataset.itemId) {
+                cart.removeProduct(target.dataset.itemId);
+            }
+        });
+        
+        // Handle quantity input change
+        cartContainer.addEventListener('change', (e) => {
+            if (e.target.classList.contains('qty-input') && e.target.dataset.itemId) {
+                const newQty = parseInt(e.target.value);
+                if (newQty > 0) {
+                    cart.updateQuantity(e.target.dataset.itemId, newQty);
+                }
+            }
+        });
+    }
+});
