@@ -104,3 +104,4 @@ formEl.addEventListener('submit', (evt) => {
 
 renderChips();
 appendMessage('bot', 'Hi! Ask me about laptops, phones, TVs, gaming gear, price match, shipping, or returns.');
+git status
