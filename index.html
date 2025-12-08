@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electronics Guide Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-1: #0d1b2a;
+      --bg-2: #1b263b;
+      --accent: #f5c542;
+      --card: rgba(255, 255, 255, 0.06);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 20%, #14213d, #0d1b2a 42%),
+                  radial-gradient(circle at 80% 0%, #1f3b5c, #0d1b2a 35%),
+                  linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: min(1100px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sidebar {
+      padding: 22px;
+      border-right: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+    }
+
+    .sidebar h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .sidebar p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .chips {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-align: left;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .chip:hover {
+      border-color: rgba(245, 197, 66, 0.8);
+      background: rgba(245, 197, 66, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .chip:active {
+      transform: translateY(0);
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .status {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(245, 197, 66, 0.7);
+    }
+
+    .log {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .msg {
+      max-width: 720px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      line-height: 1.5;
+      font-size: 15px;
+      position: relative;
+    }
+
+    .msg.user {
+      margin-left: auto;
+      background: rgba(245, 197, 66, 0.12);
+      border-color: rgba(245, 197, 66, 0.4);
+    }
+
+    .msg .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.01em;
+    }
+
+    form {
+      padding: 16px 18px;
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(245, 197, 66, 0.9);
+      box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.18);
+    }
+
+    button[type="submit"] {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(245, 197, 66, 0.5);
+      background: linear-gradient(135deg, #f5c542, #f0a202);
+      color: #0d1b2a;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    button[type="submit"]:active {
+      transform: translateY(0);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <h1>Electronics Guide</h1>
+      <p>Pick a starter question about laptops, phones, TVs, or accessories—or type your own. Answers are preloaded and run locally so your API key stays private.</p>
+      <div class="chips" id="chip-list"></div>
+      <div class="hint">You can wire this to OpenAI later via a backend. Do not expose your key in the browser.</div>
+    </aside>
+
+    <section class="main">
+      <div class="status">
+        <div class="dot"></div>
+        Ready with default store FAQs. No external calls made.
+      </div>
+      <div class="log" id="log"></div>
+      <form id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ask about a device or store policy..." autocomplete="off" />
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="./chat.js"></script>
+</body>
+</html>
