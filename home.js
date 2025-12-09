@@ -152,9 +152,6 @@ const products = [
     }
 ];
 
-// Authentication constant
-const LS_SESSION_KEY = 'electro_session';
-
 // State Management
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let wallet = JSON.parse(localStorage.getItem('wallet')) || { balance: 0, transactions: [] };
@@ -162,18 +159,8 @@ let currentFilter = 'All';
 let currentSort = 'default';
 let searchQuery = '';
 
-// Check Authentication
-function checkAuthentication() {
-    const currentUser = localStorage.getItem(LS_SESSION_KEY);
-    if (!currentUser) {
-        // User is not logged in, redirect to signup/login page
-        window.location.href = 'chatbot.html';
-    }
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    checkAuthentication();
     renderProducts();
     updateCartCount();
     updateWalletDisplay();
