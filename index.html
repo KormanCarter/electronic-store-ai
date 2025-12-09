@@ -1,434 +1,1202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="refresh" content="0; url=home.html" />
-  <title>Redirecting...</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; connect-src 'self' https:; img-src 'self' data: https:; frame-ancestors 'none';">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>TechHub - Your Electronics Destination</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 3rem 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .ai-chat-btn {
+            position: relative;
+            background: linear-gradient(135deg, var(--secondary), #ea580c);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .ai-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .cart-btn {
+            position: relative;
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-btn:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 999px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .wallet-balance {
+            background: var(--success);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Categories */
+        .categories {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Filters */
+        .products-section {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .filter-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        select.filter-btn {
+            cursor: pointer;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .product-info {
+            padding: 1.25rem;
+        }
+
+        .product-category {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+            color: var(--text-light);
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .stars {
+            color: var(--secondary);
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.75rem 0;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-add-cart,
+        .btn-buy-now {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-add-cart {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-add-cart:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-buy-now {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-buy-now:hover {
+            background: var(--primary-dark);
+        }
+
+        /* AI Chat Popup */
+        .ai-popup {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 450px;
+            height: 600px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        .ai-popup.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .ai-popup-header {
+            background: linear-gradient(135deg, var(--secondary), #ea580c);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ai-popup-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-popup-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .ai-popup-close:hover {
+            transform: scale(1.2);
+        }
+
+        .ai-popup-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-popup iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* AI Chat Interface */
+        .ai-chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .ai-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .ai-message {
+            max-width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .ai-message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .ai-message.bot {
+            align-self: flex-start;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        .ai-message.bot strong {
+            color: var(--secondary);
+        }
+
+        .ai-input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .ai-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-input-wrapper input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .ai-input-wrapper input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .ai-send-btn {
+            background: linear-gradient(135deg, var(--secondary), #ea580c);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ai-send-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .ai-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .suggestion-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--secondary);
+        }
+
+        /* Cart Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .cart-item-image {
+            font-size: 3rem;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-dark);
+            border-radius: 8px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-price {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .qty-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .qty-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .qty-display {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: auto;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .cart-total {
+            border-top: 2px solid var(--border);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .total-amount {
+            color: var(--primary);
+            font-size: 1.75rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-cart-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Wallet Modal */
+        .wallet-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .wallet-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .wallet-balance-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 1rem 0;
+        }
+
+        .wallet-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .wallet-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .wallet-btn.add {
+            background: var(--success);
+            color: white;
+        }
+
+        .wallet-btn.add:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .wallet-btn.withdraw {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .wallet-btn.withdraw:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .transaction-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .transaction-amount.positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .transaction-amount.negative {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .add-funds-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .add-funds-form input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .add-funds-form input:focus {
+            outline: none;
+            border-color: var(--success);
+        }
+
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .quick-amount-btn {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-amount-btn:hover {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Floating AI Button (Mobile) */
+        .floating-ai-btn {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--secondary), #ea580c);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        .floating-ai-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-bar {
+                max-width: 100%;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .ai-popup {
+                width: calc(100% - 2rem);
+                height: calc(100vh - 4rem);
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .ai-chat-btn {
+                display: none;
+            }
+
+            .floating-ai-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-  <p>Redirecting to electronics store...</p>
-  <script>
-    window.location.href = 'home.html';
-  </script>
-</body>
-</html>
-    :root {
-      --bg-1: #0d1b2a;
-      --bg-2: #1b263b;
-      --accent: #f5c542;
-      --card: rgba(255, 255, 255, 0.06);
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --border: rgba(255, 255, 255, 0.12);
-      --shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
-    }
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">🔌 TechHub</div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for electronics...">
+                <button class="search-btn" onclick="searchProducts()">🔍</button>
+            </div>
+            <div class="nav-actions">
+                <button class="ai-chat-btn" onclick="toggleAIChat()">
+                    🤖 Ask AI
+                </button>
+                <button class="cart-btn" onclick="toggleWallet()">
+                    💰 Wallet
+                    <span class="wallet-balance" id="walletBalance">$0</span>
+                </button>
+                <button class="cart-btn" onclick="toggleCart()">
+                    🛒 Cart
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </nav>
+    </header>
 
-    * {
-      box-sizing: border-box;
-    }
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Latest Tech at Unbeatable Prices</h1>
+            <p>Discover the newest electronics with exclusive deals and fast shipping</p>
+            <button class="hero-btn" onclick="scrollToProducts()">Shop Now</button>
+        </div>
+        <div style="font-size: 10rem;">💻</div>
+    </section>
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at 20% 20%, #14213d, #0d1b2a 42%),
-                  radial-gradient(circle at 80% 0%, #1f3b5c, #0d1b2a 35%),
-                  linear-gradient(135deg, var(--bg-1), var(--bg-2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
+    <!-- Categories -->
+    <section class="categories">
+        <h2 class="section-title">Shop by Category</h2>
+        <div class="category-grid">
+            <div class="category-card" onclick="filterByCategory('Laptops')">
+                <div class="category-icon">💻</div>
+                <div class="category-name">Laptops</div>
+            </div>
+            <div class="category-card" onclick="filterByCategory('Smartphones')">
+                <div class="category-icon">📱</div>
+                <div class="category-name">Smartphones</div>
+            </div>
+            <div class="category-card" onclick="filterByCategory('Headphones')">
+                <div class="category-icon">🎧</div>
+                <div class="category-name">Headphones</div>
+            </div>
+            <div class="category-card" onclick="filterByCategory('Tablets')">
+                <div class="category-icon">📱</div>
+                <div class="category-name">Tablets</div>
+            </div>
+            <div class="category-card" onclick="filterByCategory('Cameras')">
+                <div class="category-icon">📷</div>
+                <div class="category-name">Cameras</div>
+            </div>
+            <div class="category-card" onclick="filterByCategory('Smartwatches')">
+                <div class="category-icon">⌚</div>
+                <div class="category-name">Smartwatches</div>
+            </div>
+        </div>
+    </section>
 
-    .hidden {
-      display: none !important;
-    }
+    <!-- Products Section -->
+    <section class="products-section" id="products">
+        <h2 class="section-title">Featured Products</h2>
+        
+        <!-- Filters -->
+        <div class="filters">
+            <span class="filter-label">Filter:</span>
+            <button class="filter-btn active" onclick="filterByCategory('All')">All</button>
+            <button class="filter-btn" onclick="filterByCategory('Laptops')">Laptops</button>
+            <button class="filter-btn" onclick="filterByCategory('Smartphones')">Smartphones</button>
+            <button class="filter-btn" onclick="filterByCategory('Headphones')">Headphones</button>
+            <button class="filter-btn" onclick="filterByCategory('Tablets')">Tablets</button>
+            
+            <select class="filter-btn" id="sortSelect" onchange="sortProducts()">
+                <option value="default">Sort by</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+            </select>
+        </div>
 
-    .shell {
-      width: min(1100px, 100%);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 0;
-      overflow: hidden;
-    }
+        <!-- Products Grid -->
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </section>
 
-    @media (max-width: 900px) {
-      .shell {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .auth-card {
-      width: min(440px, 100%);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    .auth-card h1 {
-      margin: 0 0 6px;
-      font-size: 26px;
-      letter-spacing: -0.02em;
-    }
-
-    .auth-card p {
-      margin: 0 0 18px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 18px;
-    }
-
-    .auth-tabs button {
-      background: rgba(255, 255, 255, 0.03);
-      border: 0;
-      padding: 12px;
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 600;
-      border-right: 1px solid var(--border);
-      transition: background 0.15s ease;
-    }
-
-    .auth-tabs button:last-child {
-      border-right: 0;
-    }
-
-    .auth-tabs button.active {
-      background: rgba(245, 197, 66, 0.12);
-      color: var(--accent);
-    }
-
-    .auth-form {
-      display: grid;
-      gap: 12px;
-    }
-
-    .auth-form label {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .auth-form input {
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      font-size: 15px;
-      outline: none;
-    }
-
-    .auth-form input:focus {
-      border-color: rgba(245, 197, 66, 0.9);
-      box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.18);
-    }
-
-    .auth-form .submit {
-      margin-top: 4px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(245, 197, 66, 0.5);
-      background: linear-gradient(135deg, #f5c542, #f0a202);
-      color: #0d1b2a;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
-
-    .auth-form .submit:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .auth-form .submit:active {
-      transform: translateY(0);
-    }
-
-    .auth-note {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-top: 8px;
-    }
-
-    .userbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      font-size: 13px;
-      color: var(--muted);
-      gap: 12px;
-    }
-
-    .userbar strong {
-      color: var(--text);
-    }
-
-    .userbar button {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    .userbar button:hover {
-      border-color: rgba(245, 197, 66, 0.8);
-      color: var(--accent);
-    }
-
-    .sidebar {
-      padding: 22px;
-      border-right: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
-    }
-
-    .sidebar h1 {
-      margin: 0 0 8px;
-      font-size: 24px;
-      letter-spacing: -0.02em;
-    }
-
-    .sidebar p {
-      margin: 0 0 16px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .chips {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      padding: 12px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      text-align: left;
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    .chip:hover {
-      border-color: rgba(245, 197, 66, 0.8);
-      background: rgba(245, 197, 66, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .chip:active {
-      transform: translateY(0);
-    }
-
-    .main {
-      display: flex;
-      flex-direction: column;
-      min-height: 480px;
-      background: rgba(0, 0, 0, 0.16);
-    }
-
-    .status {
-      padding: 12px 18px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .status .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 12px rgba(245, 197, 66, 0.7);
-    }
-
-    .log {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .msg {
-      max-width: 720px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.03);
-      line-height: 1.5;
-      font-size: 15px;
-      position: relative;
-    }
-
-    .msg.user {
-      margin-left: auto;
-      background: rgba(245, 197, 66, 0.12);
-      border-color: rgba(245, 197, 66, 0.4);
-    }
-
-    .msg .label {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      letter-spacing: 0.01em;
-    }
-
-    form {
-      padding: 16px 18px;
-      display: flex;
-      gap: 10px;
-      border-top: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    input[type="text"] {
-      flex: 1;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      font-size: 15px;
-      outline: none;
-    }
-
-    input[type="text"]:focus {
-      border-color: rgba(245, 197, 66, 0.9);
-      box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.18);
-    }
-
-    button[type="submit"] {
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(245, 197, 66, 0.5);
-      background: linear-gradient(135deg, #f5c542, #f0a202);
-      color: #0d1b2a;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
-
-    button[type="submit"]:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    button[type="submit"]:active {
-      transform: translateY(0);
-    }
-
-    .hint {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 10px;
-      line-height: 1.5;
-    }
-  </style>
-</head>
-<body>
-  <div id="auth-card" class="auth-card hidden">
-    <h1>Welcome back</h1>
-    <p>Sign up or log in to start chatting with the electronics guide. Accounts are stored locally in your browser.</p>
-
-    <div class="auth-tabs">
-      <button id="tab-login" class="active" type="button">Log in</button>
-      <button id="tab-signup" type="button">Sign up</button>
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Shopping Cart</h2>
+                <button class="close-btn" onclick="toggleCart()">✕</button>
+            </div>
+            <div id="cartContent">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+        </div>
     </div>
 
-    <form id="login-form" class="auth-form">
-      <label>
-        Email
-        <input type="email" id="login-email" autocomplete="email" required />
-      </label>
-      <label>
-        Password
-        <input type="password" id="login-password" autocomplete="current-password" required />
-      </label>
-      <button class="submit" type="submit">Log in</button>
-    </form>
+    <!-- AI Chat Popup -->
+    <div class="ai-popup" id="aiPopup">
+        <div class="ai-popup-header">
+            <h3>🤖 AI Shopping Assistant</h3>
+            <button class="ai-popup-close" onclick="toggleAIChat()">✕</button>
+        </div>
+        <div class="ai-popup-content">
+            <div class="ai-chat-container">
+                <div class="ai-messages" id="aiMessages">
+                    <div class="ai-message bot">
+                        👋 Hello! I'm your AI shopping assistant. Ask me anything about our products, recommendations, or help with choosing the right electronics!
+                    </div>
+                    <div class="ai-suggestions">
+                        <div class="suggestion-chip" onclick="askAI('What laptop do you recommend for programming?')">💻 Best laptop for coding?</div>
+                        <div class="suggestion-chip" onclick="askAI('Compare iPhone 15 Pro vs Samsung Galaxy S24')">📱 Compare phones</div>
+                        <div class="suggestion-chip" onclick="askAI('Best noise-canceling headphones?')">🎧 Best headphones?</div>
+                        <div class="suggestion-chip" onclick="askAI('What camera is good for beginners?')">📷 Camera for beginners?</div>
+                    </div>
+                </div>
+                <div class="ai-input-container">
+                    <div class="ai-input-wrapper">
+                        <input type="text" id="aiInput" placeholder="Ask about products, prices, recommendations..." onkeypress="handleAIKeyPress(event)">
+                        <button class="ai-send-btn" onclick="sendAIMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <form id="signup-form" class="auth-form hidden">
-      <label>
-        Name
-        <input type="text" id="signup-name" autocomplete="name" required />
-      </label>
-      <label>
-        Email
-        <input type="email" id="signup-email" autocomplete="email" required />
-      </label>
-      <label>
-        Password (min 6 chars)
-        <input type="password" id="signup-password" autocomplete="new-password" minlength="6" required />
-      </label>
-      <button class="submit" type="submit">Create account</button>
-    </form>
+    <!-- Wallet Modal -->
+    <div class="modal" id="walletModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 My Wallet</h2>
+                <button class="close-btn" onclick="toggleWallet()">✕</button>
+            </div>
+            <div id="walletContent">
+                <div class="wallet-section">
+                    <div class="wallet-header">
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">Available Balance</div>
+                        <div class="wallet-balance-display" id="walletBalanceDisplay">$0.00</div>
+                    </div>
+                    <div class="wallet-actions">
+                        <button class="wallet-btn add" onclick="showAddFunds()">💳 Add Funds</button>
+                        <button class="wallet-btn withdraw" onclick="showWithdraw()">🏦 Withdraw</button>
+                    </div>
+                </div>
 
-    <div class="auth-note">Local only: users are saved to your browser storage. Clear site data to reset.</div>
-  </div>
+                <div id="addFundsSection" style="display: none;">
+                    <div class="wallet-section">
+                        <h3>Add Funds</h3>
+                        <div class="add-funds-form">
+                            <input type="number" id="addFundsAmount" placeholder="Enter amount" min="1" step="0.01">
+                            <div class="quick-amounts">
+                                <button class="quick-amount-btn" onclick="setAmount(50)">$50</button>
+                                <button class="quick-amount-btn" onclick="setAmount(100)">$100</button>
+                                <button class="quick-amount-btn" onclick="setAmount(500)">$500</button>
+                                <button class="quick-amount-btn" onclick="setAmount(1000)">$1000</button>
+                            </div>
+                            <button class="checkout-btn" onclick="addFunds()">Add to Wallet</button>
+                            <button class="wallet-btn withdraw" onclick="hideAddFunds()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
 
-  <div id="app-shell" class="shell hidden">
-    <aside class="sidebar">
-      <h1>Electronics Guide</h1>
-      <p>Pick a starter question about laptops, phones, TVs, or accessories—or type your own. Answers are preloaded and run locally so your API key stays private.</p>
-      <div class="chips" id="chip-list"></div>
-      <div class="hint">You can wire this to OpenAI later via a backend. Do not expose your key in the browser.</div>
-    </aside>
+                <div class="wallet-section">
+                    <h3>Transaction History</h3>
+                    <div class="transaction-history" id="transactionHistory">
+                        <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                            No transactions yet
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <section class="main">
-      <div class="userbar">
-        <span>Signed in as <strong id="user-email"></strong></span>
-        <button id="logout-btn" type="button">Log out</button>
-      </div>
-      <div class="status">
-        <div class="dot"></div>
-        Ready with default store FAQs. No external calls made.
-      </div>
-      <div class="log" id="log"></div>
-      <form id="chat-form">
-        <input type="text" id="chat-input" placeholder="Ask about a device or store policy..." autocomplete="off" />
-        <button type="submit">Send</button>
-      </form>
-    </section>
-  </div>
+    <!-- Floating AI Button (Mobile) -->
+    <button class="floating-ai-btn" onclick="toggleAIChat()">🤖</button>
 
-  <script src="./chat.js"></script>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span>✓</span>
+        <span id="toastMessage">Item added to cart!</span>
+    </div>
+
+    <script src="home.js"></script>
 </body>
 </html>
