@@ -164,6 +164,70 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
     updateCartCount();
     updateWalletDisplay();
+    
+    // Search Button
+    document.getElementById('searchBtn')?.addEventListener('click', searchProducts);
+    document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchProducts();
+    });
+    
+    // Navigation Buttons
+    document.getElementById('toggleAIChatBtn')?.addEventListener('click', toggleAIChat);
+    document.getElementById('toggleWalletBtn')?.addEventListener('click', toggleWallet);
+    document.getElementById('toggleCartBtn')?.addEventListener('click', toggleCart);
+    document.getElementById('floatingAIBtn')?.addEventListener('click', toggleAIChat);
+    
+    // Hero Button
+    document.getElementById('shopNowBtn')?.addEventListener('click', scrollToProducts);
+    
+    // Category Cards
+    document.querySelectorAll('.category-grid .category-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.dataset.category;
+            filterByCategory(category);
+            document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    
+    // Filter Buttons
+    document.querySelectorAll('.filters .filter-btn').forEach(btn => {
+        const category = btn.dataset.category;
+        if (category) {
+            btn.addEventListener('click', () => filterByCategory(category));
+        }
+    });
+    
+    // Sort Select
+    document.getElementById('sortSelect')?.addEventListener('change', sortProducts);
+    
+    // Modal Close Buttons
+    document.getElementById('closeCartBtn')?.addEventListener('click', toggleCart);
+    document.getElementById('closeWalletBtn')?.addEventListener('click', toggleWallet);
+    document.getElementById('closeAIPopupBtn')?.addEventListener('click', toggleAIChat);
+    
+    // AI Chat
+    document.getElementById('aiSendBtn')?.addEventListener('click', sendAIMessage);
+    document.getElementById('aiInput')?.addEventListener('keypress', handleAIKeyPress);
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const message = chip.dataset.ask;
+            askAI(message);
+        });
+    });
+    
+    // Wallet Buttons
+    document.getElementById('addFundsBtn')?.addEventListener('click', showAddFunds);
+    document.getElementById('withdrawBtn')?.addEventListener('click', showWithdraw);
+    document.getElementById('addToWalletBtn')?.addEventListener('click', addFunds);
+    document.getElementById('cancelAddFundsBtn')?.addEventListener('click', hideAddFunds);
+    
+    // Quick Amount Buttons
+    document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const amount = parseFloat(btn.dataset.amount);
+            setAmount(amount);
+        });
+    });
 });
 
 // Render Products
