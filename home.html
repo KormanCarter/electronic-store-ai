@@ -1012,17 +1012,17 @@
             <div class="logo">🔌 TechHub</div>
             <div class="search-bar">
                 <input type="text" id="searchInput" placeholder="Search for electronics...">
-                <button class="search-btn" onclick="searchProducts()">🔍</button>
+                <button class="search-btn" id="searchBtn">🔍</button>
             </div>
             <div class="nav-actions">
-                <button class="ai-chat-btn" onclick="toggleAIChat()">
+                <button class="ai-chat-btn" id="toggleAIChatBtn">
                     🤖 Ask AI
                 </button>
-                <button class="cart-btn" onclick="toggleWallet()">
+                <button class="cart-btn" id="toggleWalletBtn">
                     💰 Wallet
                     <span class="wallet-balance" id="walletBalance">$0</span>
                 </button>
-                <button class="cart-btn" onclick="toggleCart()">
+                <button class="cart-btn" id="toggleCartBtn">
                     🛒 Cart
                     <span class="cart-count" id="cartCount">0</span>
                 </button>
@@ -1035,7 +1035,7 @@
         <div class="hero-content">
             <h1>Latest Tech at Unbeatable Prices</h1>
             <p>Discover the newest electronics with exclusive deals and fast shipping</p>
-            <button class="hero-btn" onclick="scrollToProducts()">Shop Now</button>
+            <button class="hero-btn" id="shopNowBtn">Shop Now</button>
         </div>
         <div style="font-size: 10rem;">💻</div>
     </section>
@@ -1044,27 +1044,27 @@
     <section class="categories">
         <h2 class="section-title">Shop by Category</h2>
         <div class="category-grid">
-            <div class="category-card" onclick="filterByCategory('Laptops')">
+            <div class="category-card" data-category="Laptops">
                 <div class="category-icon">💻</div>
                 <div class="category-name">Laptops</div>
             </div>
-            <div class="category-card" onclick="filterByCategory('Smartphones')">
+            <div class="category-card" data-category="Smartphones">
                 <div class="category-icon">📱</div>
                 <div class="category-name">Smartphones</div>
             </div>
-            <div class="category-card" onclick="filterByCategory('Headphones')">
+            <div class="category-card" data-category="Headphones">
                 <div class="category-icon">🎧</div>
                 <div class="category-name">Headphones</div>
             </div>
-            <div class="category-card" onclick="filterByCategory('Tablets')">
+            <div class="category-card" data-category="Tablets">
                 <div class="category-icon">📱</div>
                 <div class="category-name">Tablets</div>
             </div>
-            <div class="category-card" onclick="filterByCategory('Cameras')">
+            <div class="category-card" data-category="Cameras">
                 <div class="category-icon">📷</div>
                 <div class="category-name">Cameras</div>
             </div>
-            <div class="category-card" onclick="filterByCategory('Smartwatches')">
+            <div class="category-card" data-category="Smartwatches">
                 <div class="category-icon">⌚</div>
                 <div class="category-name">Smartwatches</div>
             </div>
@@ -1078,13 +1078,13 @@
         <!-- Filters -->
         <div class="filters">
             <span class="filter-label">Filter:</span>
-            <button class="filter-btn active" onclick="filterByCategory('All')">All</button>
-            <button class="filter-btn" onclick="filterByCategory('Laptops')">Laptops</button>
-            <button class="filter-btn" onclick="filterByCategory('Smartphones')">Smartphones</button>
-            <button class="filter-btn" onclick="filterByCategory('Headphones')">Headphones</button>
-            <button class="filter-btn" onclick="filterByCategory('Tablets')">Tablets</button>
+            <button class="filter-btn active" data-category="All">All</button>
+            <button class="filter-btn" data-category="Laptops">Laptops</button>
+            <button class="filter-btn" data-category="Smartphones">Smartphones</button>
+            <button class="filter-btn" data-category="Headphones">Headphones</button>
+            <button class="filter-btn" data-category="Tablets">Tablets</button>
             
-            <select class="filter-btn" id="sortSelect" onchange="sortProducts()">
+            <select class="filter-btn" id="sortSelect">
                 <option value="default">Sort by</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -1103,7 +1103,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Shopping Cart</h2>
-                <button class="close-btn" onclick="toggleCart()">✕</button>
+                <button class="close-btn" id="closeCartBtn">✕</button>
             </div>
             <div id="cartContent">
                 <!-- Cart items will be dynamically loaded here -->
@@ -1115,7 +1115,7 @@
     <div class="ai-popup" id="aiPopup">
         <div class="ai-popup-header">
             <h3>🤖 AI Shopping Assistant</h3>
-            <button class="ai-popup-close" onclick="toggleAIChat()">✕</button>
+            <button class="ai-popup-close" id="closeAIPopupBtn">✕</button>
         </div>
         <div class="ai-popup-content">
             <div class="ai-chat-container">
@@ -1124,16 +1124,16 @@
                         👋 Hello! I'm your AI shopping assistant. Ask me anything about our products, recommendations, or help with choosing the right electronics!
                     </div>
                     <div class="ai-suggestions">
-                        <div class="suggestion-chip" onclick="askAI('What laptop do you recommend for programming?')">💻 Best laptop for coding?</div>
-                        <div class="suggestion-chip" onclick="askAI('Compare iPhone 15 Pro vs Samsung Galaxy S24')">📱 Compare phones</div>
-                        <div class="suggestion-chip" onclick="askAI('Best noise-canceling headphones?')">🎧 Best headphones?</div>
-                        <div class="suggestion-chip" onclick="askAI('What camera is good for beginners?')">📷 Camera for beginners?</div>
+                        <div class="suggestion-chip" data-ask="What laptop do you recommend for programming?">💻 Best laptop for coding?</div>
+                        <div class="suggestion-chip" data-ask="Compare iPhone 15 Pro vs Samsung Galaxy S24">📱 Compare phones</div>
+                        <div class="suggestion-chip" data-ask="Best noise-canceling headphones?">🎧 Best headphones?</div>
+                        <div class="suggestion-chip" data-ask="What camera is good for beginners?">📷 Camera for beginners?</div>
                     </div>
                 </div>
                 <div class="ai-input-container">
                     <div class="ai-input-wrapper">
-                        <input type="text" id="aiInput" placeholder="Ask about products, prices, recommendations..." onkeypress="handleAIKeyPress(event)">
-                        <button class="ai-send-btn" onclick="sendAIMessage()">Send</button>
+                        <input type="text" id="aiInput" placeholder="Ask about products, prices, recommendations...">
+                        <button class="ai-send-btn" id="aiSendBtn">Send</button>
                     </div>
                 </div>
             </div>
@@ -1145,7 +1145,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>💰 My Wallet</h2>
-                <button class="close-btn" onclick="toggleWallet()">✕</button>
+                <button class="close-btn" id="closeWalletBtn">✕</button>
             </div>
             <div id="walletContent">
                 <div class="wallet-section">
@@ -1154,8 +1154,8 @@
                         <div class="wallet-balance-display" id="walletBalanceDisplay">$0.00</div>
                     </div>
                     <div class="wallet-actions">
-                        <button class="wallet-btn add" onclick="showAddFunds()">💳 Add Funds</button>
-                        <button class="wallet-btn withdraw" onclick="showWithdraw()">🏦 Withdraw</button>
+                        <button class="wallet-btn add" id="addFundsBtn">💳 Add Funds</button>
+                        <button class="wallet-btn withdraw" id="withdrawBtn">🏦 Withdraw</button>
                     </div>
                 </div>
 
@@ -1165,13 +1165,13 @@
                         <div class="add-funds-form">
                             <input type="number" id="addFundsAmount" placeholder="Enter amount" min="1" step="0.01">
                             <div class="quick-amounts">
-                                <button class="quick-amount-btn" onclick="setAmount(50)">$50</button>
-                                <button class="quick-amount-btn" onclick="setAmount(100)">$100</button>
-                                <button class="quick-amount-btn" onclick="setAmount(500)">$500</button>
-                                <button class="quick-amount-btn" onclick="setAmount(1000)">$1000</button>
+                                <button class="quick-amount-btn" data-amount="50">$50</button>
+                                <button class="quick-amount-btn" data-amount="100">$100</button>
+                                <button class="quick-amount-btn" data-amount="500">$500</button>
+                                <button class="quick-amount-btn" data-amount="1000">$1000</button>
                             </div>
-                            <button class="checkout-btn" onclick="addFunds()">Add to Wallet</button>
-                            <button class="wallet-btn withdraw" onclick="hideAddFunds()">Cancel</button>
+                            <button class="checkout-btn" id="addToWalletBtn">Add to Wallet</button>
+                            <button class="wallet-btn withdraw" id="cancelAddFundsBtn">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -1189,7 +1189,7 @@
     </div>
 
     <!-- Floating AI Button (Mobile) -->
-    <button class="floating-ai-btn" onclick="toggleAIChat()">🤖</button>
+    <button class="floating-ai-btn" id="floatingAIBtn">🤖</button>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
