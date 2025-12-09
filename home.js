@@ -224,8 +224,8 @@ function renderProducts() {
                 </div>
                 <div class="product-price">$${product.price.toLocaleString()}</div>
                 <div class="product-actions">
-                    <button class="btn-add-cart" onclick="addToCart(${product.id})">Add to Cart</button>
-                    <button class="btn-buy-now" onclick="buyNow(${product.id})">Buy Now</button>
+                    <button class="btn-add-cart" data-product-id="${product.id}">Add to Cart</button>
+                    <button class="btn-buy-now" data-product-id="${product.id}">Buy Now</button>
                 </div>
             </div>
         </div>
@@ -369,18 +369,18 @@ function renderCart() {
     cartContent.innerHTML = `
         <div class="cart-items">
             ${cart.map(item => `
-                <div class="cart-item">
+                <div class="cart-item" data-item-id="${item.id}">
                     <div class="cart-item-image">${item.icon}</div>
                     <div class="cart-item-info">
                         <div class="cart-item-name">${item.name}</div>
                         <div class="cart-item-price">$${item.price.toLocaleString()}</div>
                         <div class="cart-item-controls">
-                            <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
+                            <button class="qty-btn qty-decrease" data-item-id="${item.id}">−</button>
                             <span class="qty-display">${item.quantity}</span>
-                            <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                            <button class="qty-btn qty-increase" data-item-id="${item.id}">+</button>
                         </div>
                     </div>
-                    <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+                    <button class="remove-btn" data-item-id="${item.id}">Remove</button>
                 </div>
             `).join('')}
         </div>
@@ -389,7 +389,7 @@ function renderCart() {
                 <span>Total:</span>
                 <span class="total-amount">$${total.toLocaleString()}</span>
             </div>
-            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+            <button class="checkout-btn">Proceed to Checkout</button>
         </div>
     `;
 }
@@ -796,5 +796,48 @@ document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === '/') {
         e.preventDefault();
         toggleAIChat();
+    }
+});
+
+// Event Delegation for Product Grid Actions
+document.getElementById('productsGrid')?.addEventListener('click', (e) => {
+    const addCartBtn = e.target.closest('.btn-add-cart');
+    const buyNowBtn = e.target.closest('.btn-buy-now');
+    
+    if (addCartBtn) {
+        const productId = parseInt(addCartBtn.dataset.productId);
+        addToCart(productId);
+    }
+    
+    if (buyNowBtn) {
+        const productId = parseInt(buyNowBtn.dataset.productId);
+        buyNow(productId);
+    }
+});
+
+// Event Delegation for Cart Actions
+document.getElementById('cartContent')?.addEventListener('click', (e) => {
+    const decreaseBtn = e.target.closest('.qty-decrease');
+    const increaseBtn = e.target.closest('.qty-increase');
+    const removeBtn = e.target.closest('.remove-btn');
+    const checkoutBtn = e.target.closest('.checkout-btn');
+    
+    if (decreaseBtn) {
+        const itemId = parseInt(decreaseBtn.dataset.itemId);
+        updateQuantity(itemId, -1);
+    }
+    
+    if (increaseBtn) {
+        const itemId = parseInt(increaseBtn.dataset.itemId);
+        updateQuantity(itemId, 1);
+    }
+    
+    if (removeBtn) {
+        const itemId = parseInt(removeBtn.dataset.itemId);
+        removeFromCart(itemId);
+    }
+    
+    if (checkoutBtn) {
+        checkout();
     }
 });

@@ -117,7 +117,7 @@ class ShoppingCart {
                 cartContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
             } else {
                 cartContainer.innerHTML = this.items.map(item => `
-                    <div class="cart-item" data-id="${item.id}">
+                    <div class="cart-item" data-item-id="${item.id}">
                         <div class="item-info">
                             ${item.image ? `<img src="${item.image}" alt="${item.name}" class="item-image">` : ''}
                             <div class="item-details">
@@ -127,13 +127,12 @@ class ShoppingCart {
                         </div>
                         <div class="item-controls">
                             <div class="quantity-controls">
-                                <button class="qty-btn minus" onclick="cart.updateQuantity('${item.id}', ${item.quantity - 1})">-</button>
-                                <input type="number" class="qty-input" value="${item.quantity}" min="1" 
-                                    onchange="cart.updateQuantity('${item.id}', parseInt(this.value))">
-                                <button class="qty-btn plus" onclick="cart.updateQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                                <button class="qty-btn minus" data-item-id="${item.id}" data-action="decrease">-</button>
+                                <input type="number" class="qty-input" value="${item.quantity}" min="1" data-item-id="${item.id}">
+                                <button class="qty-btn plus" data-item-id="${item.id}" data-action="increase">+</button>
                             </div>
                             <p class="item-subtotal">$${this.getItemSubtotal(item).toFixed(2)}</p>
-                            <button class="remove-btn" onclick="cart.removeProduct('${item.id}')">Remove</button>
+                            <button class="remove-btn" data-item-id="${item.id}">Remove</button>
                         </div>
                     </div>
                 `).join('');
@@ -421,6 +420,42 @@ function showPaymentError(errors) {
         alert('Payment Error: ' + errors.join(', '));
     }
 }
+
+// Event Delegation for Cart Item Controls
+document.addEventListener('click', (e) => {
+    const minusBtn = e.target.closest('.qty-btn.minus');
+    const plusBtn = e.target.closest('.qty-btn.plus');
+    const removeBtn = e.target.closest('.remove-btn');
+    
+    if (minusBtn && minusBtn.dataset.itemId) {
+        const itemId = minusBtn.dataset.itemId;
+        const newQuantity = parseInt(minusBtn.closest('.quantity-controls').querySelector('.qty-input').value) - 1;
+        cart.updateQuantity(itemId, newQuantity);
+    }
+    
+    if (plusBtn && plusBtn.dataset.itemId) {
+        const itemId = plusBtn.dataset.itemId;
+        const newQuantity = parseInt(plusBtn.closest('.quantity-controls').querySelector('.qty-input').value) + 1;
+        cart.updateQuantity(itemId, newQuantity);
+    }
+    
+    if (removeBtn && removeBtn.dataset.itemId) {
+        const itemId = removeBtn.dataset.itemId;
+        cart.removeProduct(itemId);
+    }
+});
+
+// Event Delegation for Quantity Input Change
+document.addEventListener('change', (e) => {
+    const qtyInput = e.target.closest('.qty-input');
+    if (qtyInput && qtyInput.dataset.itemId) {
+        const itemId = qtyInput.dataset.itemId;
+        const newQuantity = parseInt(qtyInput.value);
+        if (newQuantity > 0) {
+            cart.updateQuantity(itemId, newQuantity);
+        }
+    }
+});
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
