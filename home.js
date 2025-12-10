@@ -159,8 +159,22 @@ let currentFilter = 'All';
 let currentSort = 'default';
 let searchQuery = '';
 
+// Authentication check
+const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+if (!currentUser) {
+    window.location.href = 'index.html';
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Display user info in header
+    if (currentUser) {
+        const userGreeting = document.querySelector('.user-greeting');
+        if (userGreeting) {
+            userGreeting.textContent = `${currentUser.name}`;
+        }
+    }
+    
     renderProducts();
     updateCartCount();
     updateWalletDisplay();
@@ -220,6 +234,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('withdrawBtn')?.addEventListener('click', showWithdraw);
     document.getElementById('addToWalletBtn')?.addEventListener('click', addFunds);
     document.getElementById('cancelAddFundsBtn')?.addEventListener('click', hideAddFunds);
+    
+    // Logout Button
+    document.getElementById('logoutBtn')?.addEventListener('click', function() {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('LS_SESSION_KEY');
+        window.location.href = 'index.html';
+    });
     
     // Quick Amount Buttons
     document.querySelectorAll('.quick-amount-btn').forEach(btn => {
